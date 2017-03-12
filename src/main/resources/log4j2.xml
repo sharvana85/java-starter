@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn" name="StarterApp">
+    <Properties>
+        <Property name="LOG_LEVEL">info</Property>
+    </Properties>
+    <Appenders>
+        <Console name="STDOUT" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d %p %c{1.} [%t] [%X{Correlation-Id}] %m%n"/>
+        </Console>
+        <RollingFile name="AppFile" fileName="logs/app.log"
+                     filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
+            <PatternLayout>
+                <Pattern>%d %p %c{1.} [%t] [%X{Correlation-Id}] %m%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="250 MB"/>
+            </Policies>
+        </RollingFile>
+        <Async name="Async">
+            <AppenderRef ref="AppFile"/>
+            <AppenderRef ref="STDOUT"/>
+        </Async>
+    </Appenders>
+    <Loggers>
+        <Root level="${env:LOG_LEVEL}">
+            <AppenderRef ref="Async"/>
+        </Root>
+
+        <!--UNCOMMENT to watch HIBERNATE SQLs WITH DATA-->
+
+        <!--<logger name="org.hibernate.SQL" level="DEBUG" additivity="false">-->
+        <!--<AppenderRef ref="STDOUT" />-->
+        <!--<AppenderRef ref="MyFile" />-->
+        <!--</logger>-->
+        <!--<logger name="org.hibernate.type" level="TRACE" additivity="false">-->
+        <!--<AppenderRef ref="STDOUT" />-->
+        <!--<AppenderRef ref="MyFile" />-->
+        <!--</logger>-->
+
+    </Loggers>
+    <DynamicThresholdFilter key="X-Log-Level" onMatch="ACCEPT" onMismatch="NEUTRAL" defaultThreshold="INFO">
+        <KeyValuePair key="TRACE" value="TRACE"/>
+        <KeyValuePair key="DEBUG" value="DEBUG"/>
+    </DynamicThresholdFilter>
+</Configuration>
