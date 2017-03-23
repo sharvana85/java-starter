@@ -2,14 +2,14 @@ package com.juliaaano;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class MainTest {
 
     @Test
     public void shouldTestSomething() {
 
-        assertTrue(true);
+        assertThat(true).isTrue();
     }
 
 }
