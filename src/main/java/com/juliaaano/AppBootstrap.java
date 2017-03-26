@@ -14,5 +14,7 @@ public class AppBootstrap {
 
         MDC.put("Correlation-Id", "correlation-id");
         asciiBanner("application-ascii-banner.txt").ifPresent(AsciiBanner::print);
+
+        logger.info("App started.");
     }
 }
