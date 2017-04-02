@@ -4,10 +4,10 @@ import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class MainTest {
+public class AppShould {
 
     @Test
-    public void shouldTestSomething() {
+    public void test_something() {
 
         assertThat(true).isTrue();
     }
