@@ -2,7 +2,7 @@ FROM java:8
 
 MAINTAINER Juliano Boesel Mohr <juliaaano@gmail.com>
 
-COPY target/java-starter-*.jar app/app.jar
+COPY target/app-*.jar app/app.jar
 
 WORKDIR /app
 

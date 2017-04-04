@@ -1,0 +1,49 @@
+language: java
+
+jdk:
+  - oraclejdk8
+
+services:
+  - docker
+
+cache:
+  directories:
+    - "$HOME/.m2"
+
+before_install:
+  - openssl aes-256-cbc -K $encrypted_88b828c73747_key -iv $encrypted_88b828c73747_iv -in codesign.asc.enc -out codesign.asc -d
+  - gpg --batch --fast-import codesign.asc
+  - if [ -n "$TRAVIS_TAG" ]; then
+      mvn versions:set -DnewVersion=$TRAVIS_TAG;
+    fi
+
+install:
+  - mvn install -DskipTests=true -B -V -Psign -Dgpg.passphrase=$GPG_PASSPHRASE
+  - docker build -t $TRAVIS_REPO_SLUG .
+
+script:
+  - mvn test -B
+
+after_success:
+  - docker login -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD;
+  - if [ -n "$TRAVIS_TAG" ]; then
+      docker tag $TRAVIS_REPO_SLUG $TRAVIS_REPO_SLUG:$TRAVIS_TAG;
+      docker push $TRAVIS_REPO_SLUG:$TRAVIS_TAG;
+    elif [ "$TRAVIS_BRANCH" == "master" ]; then
+      docker push $TRAVIS_REPO_SLUG;
+    fi
+
+deploy:
+  provider: releases
+  api_key:
+    secure: mzP7y16Uv7kkPDX7C2Pdi3e7smIk7LtL1rcIXba+D32u/zcJe1sevpDu6E+iMmGWw3+e/UzVHeEOKzyTfSg/P373kMVp6LmHat8nFCsNBMRUd8sde099EOQOknFFCCMiG3wS67lzfS6ARAOqayjdKCgokgZ/7aGleYT+l6bxSkv1cksqvNqhaBwGMO/npjPomT9Ix1OXRjZz/pKxUfxI26k+t17UXJx506qCxa++8i8VtkswGjcAgvwbTguvnjYSPP7GTC0D7Hi3Vhr13vpHG1Yqt6S947pcHm9TCqj2jK7HXgrWn0CK2ZUuXjd/bBlw2cnYuFFpzcRRfJbjrc8p8snlBuyQmjAMvbKV5hRo+GWX5F7AS+iGM9nZeDdNDQxhk6eGh+75yaGfEOpqQF/xN+zVkJUjUVyBn3M0ZFqUrxbdadlHf6xRNiT3704HLfcdep6u+Tcmq0Y3lp3adxzsEPPSkIBN9q4An6PiCZTAViktaQyZAmvxj3WiCVRJBlwc/sBtoCIs4nXbgHJp9zpuwqNVxu4DSvabmrBSXT4tteVKTP5jKr2g8Eldwbf5v8EbKo8sgLSVaJiRyQ2kuBDSGlaRl+peDTHpVqdM+stDyKdugqfwnG7KjXBqNCsnQmylGiMNW2AiXpbO0rOAgCnKa+u7Hh9tIscUv0/PTZmPFqI=
+  file_glob: true
+  file:
+    - target/app-*.jar
+    - target/java-starter-*.jar
+    - target/java-starter-*.jar.asc
+  skip_cleanup: true
+  on:
+    repo: juliaaano/java-starter
+    branch: master
+    tags: true
