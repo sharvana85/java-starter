@@ -1,4 +1,4 @@
-# Java Starter [![Build Status](https://travis-ci.org/juliaaano/java-starter.svg)](https://travis-ci.org/juliaaano/java-starter)
+# Java Starter [![Build Status](https://travis-ci.org/juliaaano/java-starter.svg)](https://travis-ci.org/juliaaano/java-starter) [![Release](https://img.shields.io/github/release/juliaaano/java-starter.svg)](https://github.com/juliaaano/java-starter/releases/latest)
 
 A quick start for the development of new Java applications. :ok_hand:
 
